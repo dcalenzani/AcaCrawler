@@ -1,29 +1,29 @@
-# AcaCrawler (v.1) 
+# AcaCrawler (v.1.1) 
+Aca Crawler is the academic crawler for SciELO and REDALYC. Its main focus is to provide the user with a CSV of the articles found for an inserted keyword with their abstract, authors, country, keywords and DOI. But its goal its to become a helper to the initial digging for information found online freely.
+I always have random themes of research in my mind which I would like to quickly grasp to see if they capture my attention, so this intends to be a tool to this purpose too, adding as a next step a 
+The code is extensively commented, as I currently still feel jupiter notebooks are sluggish unless you are giving a report of some sort. 
 
-Aca Crawler is the academic crawler for SciELO and REDALYC. Its main focus is to provide the user with a CSV of the articles found for an inserted keyword with their abstract, authors, country, keywords and DOI. 
+## Log
+The log contains the information of this version, the previous ones and the planned implementations.
 
-The code is extensively commented, as I currently still hate jupiter notebooks and don't think of them as actually useful unless you are teaching something of some sort. 
+#### V.1.1
+- Crawler gathers Authors, Title, Abstract and Id from the first page of Scielo
+- Crawler changed dictionary and arrays for a dictionary with classes, which are somesort of the same thing actually? But easier to call in a Python environment I guess
+- Divided some functions into smaller functions so they could be worked with more flexibility 
 
-Is every text a piece of learning? Thats more of a onthological question, me thinks.
+#### Planned implementations (in order of importance)
+- Inclusion of all the articles found in the site
+- Graph creation through matplotlib and networkx libraries
+- Functions for searching in Redalyc
 
-## Graph creation
+## Getting the page structure
+For each page we have different HTML structures. In fact, HTML is such a dumpster fire that you can find many libraries that will help you with the random stuff you can find produced by a rage infused coder at 4am.
+If you are unfamiliar with HTML I would recommend just using the developer tools and then the tool that says "pick an element" or something along the lines. In Firefox you can use CTRL+SHIFT+C or find the button on the upper left side of the developer tools window.
+After doing this you should see the HTML code for the webpage and your cursor acting like a highlighter depending on its position on the site. You can see the HTML code moving, you can right click to copy the inner and outer HTML, I would recommend copying the outer html from the parent <div> (usually div) where you wanted contents are contained, always try to find the bigger container (the grand grand grand parent, if you wish). 
 
-When the first part of Aca Crawler (csv creation) is done we can do a small graph that links keywords and countries.
-
-## Page Structure
-
-For each page we have different structures for their HTML <tags>. If you are unfamiliar with HTML I would recommend just using the developer tools and then the tool that says "pick an element" or something along the lines. In Firefox you can use CTRL+SHIFT+C. 
-
-After doing this you should see the HTML code for the webpage and your cursor acting like a highlighter depending on its position on the site. Select your desired object for analysis an copy its tag. 
-
-### Examples provided
-
-For example, the webpage Scielo uses a <strong>, but this is contained inside and <a> tag, so you could use any of them for their links to the articles pages. As <a> is more usual insider the webpage my solution searches first for the unique strong tag and then compares it with the <a> tag title
-
-I checked the following [search](https://search.scielo.org/?lang=en&count=15&from=0&output=site&sort=&format=summary&fb=&page=1&q=suicidio) that you can use as an example.
-
-When going inside an [article page](https://www.scielo.br/j/rlae/a/bJjynbR36qqNrskkRhF9k7k/?lang=es) and using CTRL+SHIFT+C again we'll see things get a little complicated, as the Abstract is just a <div> before a <dif> with an article tag and the authors of the article are hidden within a modal that uses the <div> tag again, with a class='modal-body' that containg a <div class='tutors'> which contains the data we require.
-
-https://www.redalyc.org/busquedaArticuloFiltros.oa?q=suicidio
-
-https://www.redalyc.org/articulo.oa?id=203122516002
+### Further notes for future implementation
+Please note the current analysis on the Scielo website.
+- Scielo uses <a> for its next page buttons, while also using "javascript:go_to_page('2')". This can be useful for making the loop for all the pages. But the URL also lets you calculate the length of pages.
+- Author are inside a <div> called  line authors, inside theres <a> with the authors names.
+- All the ids inside class="results" have the same lenght, also at the end the define the country (pry=Peru, mex=Mexico, etc), but the ids for class='abstract' have 3 more characters that correspond to the language of the abstract.
+- There is an href DOI inside an <a> 
