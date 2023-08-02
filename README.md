@@ -6,6 +6,10 @@ The code is extensively commented, as I currently still feel jupiter notebooks a
 ## Log
 The log contains the information of this version, the previous ones and the planned implementations.
 
+#### V.1.3
+- Limiter created
+- Main program translated into a function and created a check for exporting the code as a python module
+
 #### V.1.2
 - Loop for accesing all the articles in all pages of Scielo
 - Functions for updating the url dynamic handling of the URL
@@ -22,12 +26,11 @@ The log contains the information of this version, the previous ones and the plan
 - Crawler gets the titles and authors information from the first page of scielo
 
 #### Planned implementations (in order of importance)
-- Limiter for the loop function, so you wont gather more articles than needed
 - GUI for people who don't code at all.
-- Packaging for beta version
+- Packaging for alpha version
 - Graph creation through matplotlib and networkx libraries
 - Functions for searching in Redalyc
-- OpenTranslate Abstract correlation
+- OpenTranslate Abstract translations
 
 ## Getting the page structure
 For each page we have different HTML structures. In fact, HTML is such a dumpster fire that you can find many libraries that will help you with the random stuff you can find produced by a rage infused coder at 4am.
