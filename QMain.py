@@ -3,6 +3,7 @@ from PyQt6 import QtWidgets, uic
 import sys
 
 from GraphiCrawl import Ui_Form
+from acaCrawler import *
 
 class MainWindow(QtWidgets.QMainWindow, Ui_Form):
     def __init__(self, *args, obj=None, **kwargs):
