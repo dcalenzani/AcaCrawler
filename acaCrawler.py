@@ -111,6 +111,22 @@ def get_data(url):
     
     return articles
 
+def update_loop():
+    # Process the data and print the progress
+    global page_number, starting_article
+
+    while page_number <= limiter:
+        # Print progress
+        print(f"Procesando pagina {page_number} de {total_n_pages}: {base_url}")
+        # Get all the articles related to the search
+        all_articles = get_data(base_url)
+        # Update the url
+        starting_article = starting_article + articles_per_page
+        page_number = page_number+1
+        base_url = update_url(search_text, page_number, starting_article)
+
+    return all_articles
+
 def create_csv(search_text, all_articles):
     # Define the fieldnames for the .csv (same as classes, might be a more dynamic solution)
     fieldnames = ['Id', 'Title', 'Authors', 'Abstracts', 'DOI', 'Country']
@@ -150,17 +166,8 @@ def run_aca_crawler(search_text, limiter):
     print('Encontramos un aprox. de : ', aprox_articles, ' articulos')
     print('Estan repartidos entre: ',total_n_pages, ' paginas')
 
-    # Process the data and print the progress
-    while page_number <= limiter:
-        # Print progress
-        print(f"Procesando pagina {page_number} de {total_n_pages}: {base_url}")
-        # Get all the articles related to the search
-        all_articles = get_data(base_url)
-        # Update the url
-        starting_article = starting_article + articles_per_page
-        page_number = page_number+1
-        base_url = update_url(search_text, page_number, starting_article)
-
+    all_articles = get_data(base_url)
+    
     # Print results
     total_articles = len(all_articles)
     print('Articulos tabulados: ', len(all_articles))
@@ -169,7 +176,6 @@ def run_aca_crawler(search_text, limiter):
     # CSV function invocation
     create_csv(search_text, all_articles)
     print("CSV creado de manera exitosa!.")
-
 
 if __name__ == "__main__":
     # User search input (parsed)
