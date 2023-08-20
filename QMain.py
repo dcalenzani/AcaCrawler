@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6 import QtWidgets, uic
 import sys
 
-from GraphiCrawl import Ui_Form
+from GraphiCrawl_2 import Ui_Form
 from acaCrawler import *
 
 class MainWindow(QtWidgets.QMainWindow, Ui_Form):

@@ -25,11 +25,6 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
-# Scielo URL navigational variables
-articles_per_page = 15
-starting_article = 1
-page_number = 1
-
 # Classes and variables
 articles = {} # Dictionary for placing Article objects
 
@@ -45,26 +40,85 @@ class Article:
 # Functions
 
 # Make the soup - Handle the web page
-def soup(url):    
-    html = urllib.request.urlopen(url, context=ctx).read()
+def get_soup(url_search):    
+    html = urllib.request.urlopen(url_search, context=ctx).read()
     soup = BeautifulSoup(html, 'html.parser')
+
     return soup
 
 # Function for updating the base url given some sort of search text and values
-def update_url(search_text,page_number,starting_article):
-    
+def update_url(raw_search,page_number,starting_article):
+    parsed_search = raw_search.replace(' ', '+')
     scielo_base_url = f'https://search.scielo.org/?lang=es&count=15&from={starting_article}&output=site&sort=&format=summary&fb=&page={page_number}&q='
     # redalyc_base_url = 'https://www.redalyc.org/busquedaArticuloFiltros.oa?q=motivaciones'
-    scielo_search = scielo_base_url + search_text
+    url_search = scielo_base_url + parsed_search
 
-    return scielo_search
+    return url_search
+
+def scrape_article_data(raw_search, limiter): 
+    # Process the data and print the progress
+    page_number = 1
+    starting_article = 0
+    articles_per_page = 15
+    url_search = update_url(raw_search, page_number, starting_article)
+    base_soup = get_soup(url_search)
+    while page_number <= limiter:
+        # Print progress
+        print(f"Procesando pagina {page_number} de {limiter}: {url_search}")
+        # Get all the articles related to the search
+        all_articles = get_data(url_search)
+        # Update the url
+        starting_article = starting_article + articles_per_page
+        page_number = page_number + 1
+        url_search = update_url(raw_search, page_number, starting_article)
+
+    return all_articles
+
+def get_total_articles(url_search):
+    soup = get_soup(url_search).find('strong', id='TotalHits')
+    total_articles = soup.get_text().replace(' ', '')
+    return total_articles
+
+def get_total_pages(url_search):
+    soup = get_soup(url_search).find('input', class_='form-control goto_page')
+    # Get the total number of pages (as integer) from our search
+    total_pages = int(soup.contents[0].strip().split()[1])
+
+    return total_pages
+
+def get_current_page(url_search):
+    soup = get_soup(url_search)
+    input_tag = soup.find('input', {'type': 'text', 'name': 'page', 'class': 'form-control goto_page'})
+
+    # Extract the value attribute from the <input> tag
+    value = input_tag['value']
+
+    return value
+
+def create_csv(raw_search, all_articles):
+    # Define the fieldnames for the .csv (same as classes, might be a more dynamic solution)
+    fieldnames = ['Id', 'Title', 'Authors', 'Abstracts', 'DOI', 'Country']
+
+    # Create a .csv files named as the searched text
+    with open(f'{raw_search}.csv', 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        for article_id, article in all_articles.items():
+            row = {
+                    'Id' : article_id,
+                    'Title': article.title,
+                    'Authors':', '.join(article.authors),
+                    'Abstracts': ', '.join(article.abstracts),
+                    'DOI' : article.doi,
+                    'Country': article.country
+                }
+            writer.writerow(row)
 
 # The big boy (or girl) - It works by asking for a URL, which can (and will be) the search input we asked for at the beggining
-def get_data(url):
-    
+def get_data(url): 
     # Get all the tags that match certain condition of attribute
     def get_tag_and_attr(tag,attr):
-        tags = soup(url).find_all(tag, class_=attr)      
+        tags = get_soup(url).find_all(tag, class_=attr)      
         return tags
     
     # Get the "parent id". In Scielo, all articles tags are contained inside a <div> with a key id.
@@ -111,95 +165,32 @@ def get_data(url):
     
     return articles
 
-def update_loop():
-    # Process the data and print the progress
-    global page_number, starting_article
-
-    while page_number <= limiter:
-        # Print progress
-        print(f"Procesando pagina {page_number} de {total_n_pages}: {base_url}")
-        # Get all the articles related to the search
-        all_articles = get_data(base_url)
-        # Update the url
-        starting_article = starting_article + articles_per_page
-        page_number = page_number+1
-        base_url = update_url(search_text, page_number, starting_article)
-
-    return all_articles
-
-def create_csv(search_text, all_articles):
-    # Define the fieldnames for the .csv (same as classes, might be a more dynamic solution)
-    fieldnames = ['Id', 'Title', 'Authors', 'Abstracts', 'DOI', 'Country']
-
-    # Create a .csv files named as the searched text
-    with open(f'{search_text}.csv', 'w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        for article_id, article in all_articles.items():
-            row = {
-                    'Id' : article_id,
-                    'Title': article.title,
-                    'Authors':', '.join(article.authors),
-                    'Abstracts': ', '.join(article.abstracts),
-                    'DOI' : article.doi,
-                    'Country': article.country
-                }
-            writer.writerow(row)
-
-def run_aca_crawler(search_text, limiter):
-    # Hook the global variables (Python specific)
-    global articles_per_page, starting_article, page_number
+def run_aca_crawler():
+    # User search input (parsed)
+    raw_search = urllib.parse.quote(input('Ingrese su busqueda: '))
 
     # Update the url for the first page
-    base_url = update_url(search_text, page_number, starting_article)
+    url_search = update_url(raw_search, 1, 0)
 
-    # Search for the tag that contains the text with the total of pages
-    input_tag = soup(base_url).find('input', class_='form-control goto_page')
+    print(url_search)
 
-    # Get the total number of pages (as integer) from our search
-    total_n_pages = int(input_tag.contents[0].strip().split()[1])
-
-    # Aproximate the number of articles (to lowest)
-    aprox_articles = articles_per_page*total_n_pages
-
+    aprox_articles = get_total_articles(url_search)
+    total_n_pages = get_total_pages(url_search)
     # Print some information about the findings and ask the number of pages to crawl.
     print('Encontramos un aprox. de : ', aprox_articles, ' articulos')
     print('Estan repartidos entre: ',total_n_pages, ' paginas')
 
-    all_articles = get_data(base_url)
-    
-    # Print results
-    total_articles = len(all_articles)
-    print('Articulos tabulados: ', len(all_articles))
-    articles_processed = 0
+    limiter = int(input('Ingrese el numero de páginas para tabular: '))
 
+    all_articles = scrape_article_data(raw_search, limiter)
+
+    # Print results
+    print('Articulos tabulados: ', len(all_articles))
+    
     # CSV function invocation
-    create_csv(search_text, all_articles)
+    create_csv(raw_search, all_articles)
     print("CSV creado de manera exitosa!.")
 
 if __name__ == "__main__":
-    # User search input (parsed)
-    search_text = urllib.parse.quote(input('Ingrese su busqueda: '))
-
-    # Update the url for the first page
-    base_url = update_url(search_text, page_number, starting_article)
-
-    # Search for the tag that contains the text with the total of pages
-    input_tag = soup(base_url).find('input', class_='form-control goto_page')
-
-    # Get the total number of pages (as integer) from our search
-    total_n_pages = int(input_tag.contents[0].strip().split()[1])
-
-    # Aproximate the number of articles (to lowest)
-    aprox_articles = articles_per_page*total_n_pages
-
-    # Print some information about the findings and ask the number of pages to crawl.
-    print('Encontramos un aprox. de : ', aprox_articles, ' articulos')
-    print('Estan repartidos entre: ',total_n_pages, ' paginas')
-    limiter = int(input('Ingrese el numero de páginas para tabular: '))
-
     # Call the main function with user input
-    run_aca_crawler(search_text, limiter)
-
-'''
-'''
+    run_aca_crawler()
