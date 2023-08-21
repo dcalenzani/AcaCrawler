@@ -9,10 +9,11 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
 from acaCrawler import get_current_page, get_data, get_soup, get_total_articles, get_total_pages, create_csv, Article, articles, scrape_articles_data, update_url
+import time
 
 class Ui_Form(object):
     def setupUi(self, Form):
-        Form.setObjectName("Form")
+        Form.setObjectName("Crawler Académico")
         Form.resize(650, 298)
         self.RBSelection = QtWidgets.QRadioButton(parent=Form)
         self.RBSelection.setGeometry(QtCore.QRect(390, 170, 201, 20))
@@ -21,7 +22,7 @@ class Ui_Form(object):
         self.RBSelection.toggled.connect(self.select_all)
 
         self.SearchButton = QtWidgets.QPushButton(parent=Form)
-        self.SearchButton.setGeometry(QtCore.QRect(530, 20, 80, 22))
+        self.SearchButton.setGeometry(QtCore.QRect(430, 250, 80, 22))
         self.SearchButton.setObjectName("SearchButton")
         self.SearchButton.clicked.connect(self.run_search)
 
@@ -33,7 +34,6 @@ class Ui_Form(object):
         self.SearchLine = QtWidgets.QLineEdit(parent=Form)
         self.SearchLine.setGeometry(QtCore.QRect(50, 60, 561, 22))
         self.SearchLine.setObjectName("SearchLine")
-        self.SearchLine.textChanged.connect(self.onChanged)
         
         self.SearchLabel = QtWidgets.QLabel(parent=Form)
         self.SearchLabel.setGeometry(QtCore.QRect(60, 30, 131, 16))
@@ -47,7 +47,6 @@ class Ui_Form(object):
         self.PagesNumber.setGeometry(QtCore.QRect(390, 210, 43, 23))
         self.PagesNumber.setObjectName("PagesNumber")
         self.PagesNumber.setEnabled(False)
-        self.PagesNumber.valueChanged.connect(self.update_pages)
         
         self.ComsLabel = QtWidgets.QTextBrowser(parent=Form)
         self.ComsLabel.setGeometry(QtCore.QRect(50, 100, 301, 81))
@@ -64,58 +63,50 @@ class Ui_Form(object):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-    def update_pages(self, value):
-        self.ComsLabel.setText(str(value))
-
     def run_search(self):
         search_url = update_url(self.SearchLine.text(),1,1)
         total_articles = get_total_articles(search_url)
         total_pages = get_total_pages(search_url)
-        printable = f"Encontramos un total de: {total_articles} artículos\nEstan separados en {total_pages} páginas\nUrl de referencia: {search_url}"
+        printable = f"Encontramos un total de: {total_articles} artículos\nEstan separados en {total_pages} páginas\n\nUrl de referencia: {search_url}"
 
         self.ComsLabel.setText(printable)
-        self.ComsLabel_2.setText("Cuantas páginas quieres descargar?")
 
     def run_export(self):
         def progress_printer(message):
-            print(message)
+            progress_output = message
+            #print(progress_output)
 
         if self.RBSelection.isChecked():
+            print("procesando todos")
             search_url = update_url(self.SearchLine.text(),1,1)
-            total_articles = int(get_total_articles(search_url))
-            all_articles = scrape_articles_data(self.SearchLine.text(),total_articles, progress_printer)
-            print('Articulos tabulados: ', len(all_articles))
+            total_pages = int(get_total_pages(search_url))
+            all_articles = scrape_articles_data(self.SearchLine.text(),total_pages, progress_printer)
+            output = f'Articulos tabulados: {len(all_articles)}'
             # CSV function invocation
             create_csv(self.SearchLine.text(), all_articles)
-            print("CSV creado de manera exitosa!.")
+            self.ComsLabel_2.setText(output + "\nCSV creado de manera existosa!")
         else:
             pages_selected = self.PagesNumber.value()
             all_articles = scrape_articles_data(self.SearchLine.text(),pages_selected, progress_printer)
-            print('Articulos tabulados: ', len(all_articles))
+            output = f'Articulos tabulados:  {len(all_articles)}'
             # CSV function invocation
             create_csv(self.SearchLine.text(), all_articles)
-            print("CSV creado de manera exitosa!.")
+            self.ComsLabel_2.setText(output + "\nCSV creado de manera existosa!")
 
     def select_all(self):
         if self.RBSelection.isChecked():
             self.PagesNumber.setEnabled(False)
-            print("Selected: ", self.sender().isChecked(), "  Name: ", self.sender().text())
         else:                        
             self.PagesNumber.setEnabled(True)
-            print("Selected: ", self.sender().isChecked(), "  Name: ", self.sender().text())
-
-    def onChanged(self, text):
-        self.ComsLabel.setText(text)
-        #self.ComsLabel.adjustSize()
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Crawler Académico"))
         self.RBSelection.setText(_translate("Form", "Todas las páginas"))
         self.SearchButton.setText(_translate("Form", "Buscar"))
         self.ExportButton.setText(_translate("Form", "Exportar"))
         self.SearchLabel.setText(_translate("Form", "Ingrese su búsqueda"))
-        self.SelectionLabel.setText(_translate("Form", "Páginas a descargar"))
+        self.SelectionLabel.setText(_translate("Form", "Páginas a descargar:"))
         self.PagesLabel.setText(_translate("Form", "Paginas"))
 
 
