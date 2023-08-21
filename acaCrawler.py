@@ -48,23 +48,24 @@ def get_soup(url_search):
 
 # Function for updating the base url given some sort of search text and values
 def update_url(raw_search,page_number,starting_article):
-    parsed_search = raw_search.replace(' ', '+')
+    parsed_search = urllib.parse.quote(raw_search)
     scielo_base_url = f'https://search.scielo.org/?lang=es&count=15&from={starting_article}&output=site&sort=&format=summary&fb=&page={page_number}&q='
     # redalyc_base_url = 'https://www.redalyc.org/busquedaArticuloFiltros.oa?q=motivaciones'
     url_search = scielo_base_url + parsed_search
 
     return url_search
 
-def scrape_article_data(raw_search, limiter): 
+def scrape_articles_data(raw_search, limiter, progress_callback): 
     # Process the data and print the progress
     page_number = 1
-    starting_article = 0
+    starting_article = 1
     articles_per_page = 15
     url_search = update_url(raw_search, page_number, starting_article)
     base_soup = get_soup(url_search)
     while page_number <= limiter:
         # Print progress
-        print(f"Procesando pagina {page_number} de {limiter}: {url_search}")
+        if progress_callback:
+            progress_callback(f"Procesando pagina {page_number} de {limiter}: {url_search}")
         # Get all the articles related to the search
         all_articles = get_data(url_search)
         # Update the url
@@ -167,10 +168,10 @@ def get_data(url):
 
 def run_aca_crawler():
     # User search input (parsed)
-    raw_search = urllib.parse.quote(input('Ingrese su busqueda: '))
+    raw_search = input('Ingrese su busqueda: ')
 
     # Update the url for the first page
-    url_search = update_url(raw_search, 1, 0)
+    url_search = update_url(raw_search, 1, 1)
 
     print(url_search)
 
@@ -182,7 +183,7 @@ def run_aca_crawler():
 
     limiter = int(input('Ingrese el numero de páginas para tabular: '))
 
-    all_articles = scrape_article_data(raw_search, limiter)
+    all_articles = scrape_articles_data(raw_search, limiter)
 
     # Print results
     print('Articulos tabulados: ', len(all_articles))

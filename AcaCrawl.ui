@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
-    <height>298</height>
+    <width>658</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QRadioButton" name="RBSelection">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>150</y>
-     <width>99</width>
+     <x>390</x>
+     <y>170</y>
+     <width>201</width>
      <height>20</height>
     </rect>
    </property>
@@ -29,8 +29,8 @@
   <widget class="QPushButton" name="SearchButton">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>240</y>
+     <x>530</x>
+     <y>20</y>
      <width>80</width>
      <height>22</height>
     </rect>
@@ -42,8 +42,8 @@
   <widget class="QPushButton" name="CloseButton">
    <property name="geometry">
     <rect>
-     <x>500</x>
-     <y>240</y>
+     <x>530</x>
+     <y>250</y>
      <width>80</width>
      <height>22</height>
     </rect>
@@ -57,7 +57,7 @@
     <rect>
      <x>50</x>
      <y>60</y>
-     <width>551</width>
+     <width>561</width>
      <height>22</height>
     </rect>
    </property>
@@ -78,8 +78,8 @@
   <widget class="QLabel" name="SelectionLabel">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>110</y>
+     <x>390</x>
+     <y>130</y>
      <width>141</width>
      <height>16</height>
     </rect>
@@ -91,8 +91,8 @@
   <widget class="QSpinBox" name="PagesNumber">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>190</y>
+     <x>390</x>
+     <y>210</y>
      <width>43</width>
      <height>23</height>
     </rect>
@@ -111,8 +111,8 @@
   <widget class="QLabel" name="PagesLabel">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>190</y>
+     <x>460</x>
+     <y>210</y>
      <width>57</width>
      <height>21</height>
     </rect>
