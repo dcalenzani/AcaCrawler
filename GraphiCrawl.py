@@ -8,8 +8,7 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
-from acaCrawler import get_current_page, get_data, get_soup, get_total_articles, get_total_pages, create_csv, Article, articles, scrape_articles_data, update_url
-import time
+from acaCrawler import get_total_articles, get_total_pages, create_csv, scrape_articles_data, update_url
 
 class Ui_Form(object):
     def setupUi(self, Form):

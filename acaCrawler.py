@@ -168,6 +168,9 @@ def get_data(url):
 
 def run_aca_crawler():
     # User search input (parsed)
+    def printer_caller(message):
+        print(message)
+
     raw_search = input('Ingrese su busqueda: ')
 
     # Update the url for the first page
@@ -183,7 +186,7 @@ def run_aca_crawler():
 
     limiter = int(input('Ingrese el numero de páginas para tabular: '))
 
-    all_articles = scrape_articles_data(raw_search, limiter)
+    all_articles = scrape_articles_data(raw_search, limiter,printer_caller)
 
     # Print results
     print('Articulos tabulados: ', len(all_articles))
