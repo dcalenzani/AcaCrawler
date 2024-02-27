@@ -1,7 +1,15 @@
 # AcaCrawler (v.1.3) 
-Aca Crawler is the academic crawler for SciELO and REDALYC. Its main focus is to provide the user with a CSV of the articles found for an inserted keyword with their abstract, authors, country, keywords and DOI. But its goal its to become a helper to the initial digging for information found online freely. I always have random themes of research in my mind which I would like to quickly grasp to see if they capture my attention, so this intends to be a tool to this purpose too.
+Aca Crawler is an academic crawler for SciELO. Its main focus is to provide the user with a CSV of the articles found for an inserted keyword with their abstract, authors, country, keywords and DOI. But its goal its to become a helper to the initial digging for information found online freely. I always have random themes of research in my mind which I would like to quickly grasp to see if they capture my attention, by having the abstracts and keywords tabulated we can quickly grasp the main points of conversation, the "state of the art" of a research subject.
 
 The code is extensively commented, as I currently still feel jupiter notebooks are sluggish unless you are giving a report of some sort. 
+
+## Requirements
+For AcaCrawler to work, you'll need to install python and some dependencies. 
+	- Python 3.10 (or above)
+	- PyQt 5
+	- BeautifulSoup
+
+We are working on an UI solution that will be distributed online when reaches test level.
 
 ## Log
 The log contains the information of this version, the previous ones and the planned implementations.
