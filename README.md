@@ -11,6 +11,12 @@ For AcaCrawler to work, you'll need to install python and some dependencies.
 
 We are working on an UI solution that will be distributed online when reaches test level.
 
+## Instructions
+
+For using the program through the CLI, you need to follow the next steps:
+
+1.- 
+
 ## Log
 The log contains the information of this version, the previous ones and the planned implementations.
 
