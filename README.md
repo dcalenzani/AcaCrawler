@@ -32,7 +32,10 @@ We are working on an UI solution that will be distributed online when reaches te
 
 For using the program through the CLI, you need to follow the next steps:
 
-1.- 
+1.- The cli version will prompt the user for a search term, you can input words and also full phrases. The search term will be used to search in the Scielo database.
+2.- A prompt with the total amount of pages will be shown, write as input the value for the amount of pages you wish to analyze.
+3.- Wait while the program is working, it will show the progress of the pages being analyzed.
+4.- Check the output file, it will be named "[SEARCH TERM].csv" and will be located in the same folder as the program.
 
 ## Log
 The log contains the information of this version, the previous ones and the planned implementations.
