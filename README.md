@@ -7,11 +7,11 @@ Aca Crawler is an academic crawler for SciELO. Its main focus is to provide the 
 * [Requirements](#requirements)
 * [Instructions](#instructions)
 * [Log](#log)
-		* [V.1.3](#v13)
-		* [V.1.2](#v12)
-		* [V.1.1](#v11)
-		* [V.1.0](#v10)
-		* [Backlog (in order of importance)](#backlog-in-order-of-importance)
+        * [V.1.3](#v13)
+        * [V.1.2](#v12)
+        * [V.1.1](#v11)
+        * [V.1.0](#v10)
+        * [Backlog (in order of importance)](#backlog-in-order-of-importance)
 * [Getting the page structure](#getting-the-page-structure)
 * [Further notes for future implementation](#further-notes-for-future-implementation)
 
@@ -19,9 +19,9 @@ Aca Crawler is an academic crawler for SciELO. Its main focus is to provide the 
 
 ## Requirements
 For AcaCrawler to work, you'll need to install python and some dependencies. 
-	- Python 3.10 (or above)
-	- PyQt 5
-	- BeautifulSoup
+- Python 3.10 (or above)
+- PyQt 5 (only if you wish to work on the UI/experimental version)
+- BeautifulSoup
 
 We are working on an UI solution that will be distributed online when reaches test level.
 
